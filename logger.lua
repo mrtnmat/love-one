@@ -21,7 +21,7 @@ local function new()
         eventBus.emit(Events.newLogEntry)
     end
 
-    eventBus.on(Events.gameStart, function () push("Game Start!") end)
+    eventBus.on(Events.gameStart, self, function () push("Game Start!") end)
 
     return self
 end

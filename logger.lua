@@ -18,7 +18,6 @@ local function new()
 
     local function push(logEntry)
         table.insert(self.logs, logEntry)
-        eventBus.emit(Events.newLogEntry)
     end
 
     eventBus.on(Events.gameStart, self, function () push("Game Start!") end)

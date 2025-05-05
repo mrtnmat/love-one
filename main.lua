@@ -1,4 +1,4 @@
--- Simple rectangle that moves with arrow keys
+require("ui")
 
 -- Initialize position and speed
 local x = 400
@@ -66,7 +66,7 @@ function love.update(dt)
     animation(dt)
 end
 
-function love.draw()
+function love.drawOLD()
     -- Save the current transform
     love.graphics.push()
 

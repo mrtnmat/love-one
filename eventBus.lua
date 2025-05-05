@@ -8,7 +8,11 @@ local function new()
     local self = {}
 
     --emit event method
-    function self.emit(eventname)
+    function self.emit(eventname, payload)
+    end
+
+    --register to even method
+    function self.on(event, callback)
     end
 
     return self

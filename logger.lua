@@ -16,10 +16,12 @@ local function new()
 
     self.logs = {}
 
-    function self.push(logEntry)
+    local function push(logEntry)
         self.log.push(logEntry)
         eventBus.emit(Events.newLogEntry)
     end
+
+    eventBus.on(Events.gameStart, push)
 
     return self
 end

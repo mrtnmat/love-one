@@ -34,6 +34,10 @@ local function animation(dt)
     end
 end
 
+function love.keypressed(key, scancode, isrepeat)
+    eventBus.emit(events.keyPressed, {key = key, scancode = scancode, isrepeat = isrepeat})
+end
+
 local function playerControls(dt)
     -- Update position based on key presses
     if love.keyboard.isDown("left") then

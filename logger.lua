@@ -21,6 +21,7 @@ local function new()
     end
 
     eventBus.on(Events.gameStart, self, function () push("Game Start!") end)
+    eventBus.on(Events.keyPressed, self, function (params) push("Key pressed: " .. params.key) end)
 
     return self
 end

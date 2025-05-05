@@ -1,4 +1,8 @@
 require("ui")
+local EventBusModule = require("eventBus")
+local eventBus = EventBusModule.getInstance()
+
+local events = require("eventNames")
 
 -- Initialize position and speed
 local x = 400
@@ -14,6 +18,8 @@ function love.load()
 
     -- Set background color to a dark gray
     love.graphics.setBackgroundColor(0.2, 0.2, 0.2)
+
+    eventBus.emit(events.gameStart)
 end
 
 local function animation(dt)

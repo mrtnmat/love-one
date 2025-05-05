@@ -14,14 +14,14 @@ local instance = nil
 local function new()
     local self = {}
 
-    self.logs = {}
+    self.logs = {"TEST LOG"}
 
     local function push(logEntry)
-        self.log.push(logEntry)
+        table.insert(self.logs, logEntry)
         eventBus.emit(Events.newLogEntry)
     end
 
-    eventBus.on(Events.gameStart, push)
+    eventBus.on(Events.gameStart, function () push("Game Start!") end)
 
     return self
 end

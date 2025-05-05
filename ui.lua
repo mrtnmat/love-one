@@ -3,8 +3,9 @@ local eventBus = EventBusModule.getInstance()
 
 local Utils = require("utils")
 
-local log = { "line1", "line2", "line3", "HELLO", "test", "long string is good for testing", "2 + 2 = pizza",
-    "cantwritenomore", "                 space               .", "HIDDEN ENTRY" }
+local Logger = require("logger")
+
+local log = Logger.getInstance()
 
 love.graphics.setDefaultFilter("nearest", "nearest")
 
@@ -19,7 +20,7 @@ end
 
 local UI = {
     displayLog = function()
-        local entriesToPrint = Utils.lastUpToN(log, 10)
+        local entriesToPrint = Utils.lastUpToN(log.logs, 10)
         for i = 1, #entriesToPrint, 1 do
             love.graphics.setColor(1, 1, 1)
             drawLogLine(i, entriesToPrint[i])
@@ -28,9 +29,6 @@ local UI = {
 }
 
 function love.draw()
-    UI.displayLog()
-    table.remove(log)
-    table.insert(log, "NEW ENTRY")
     UI.displayLog()
 end
 

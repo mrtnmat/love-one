@@ -89,6 +89,7 @@ function love.draw()
     -- UI.displayLog()
     -- drawTileMap()
     proto.renderMap()
+    proto.printDebugInfo()
 end
 
 function love.drawOLD()

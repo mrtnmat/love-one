@@ -74,6 +74,7 @@ local cameraX = 0
 local cameraY = 0
 local cameraSpeed = 2
 local tileSize = 40
+local dtCopy = 0
 
 local function getTileColor(x, y)
     if x % 2 == y % 2 then
@@ -84,7 +85,8 @@ local function getTileColor(x, y)
 end
 
 
-local function moveCamera()
+local function moveCamera(dt)
+    dtCopy = dt + dtCopy
     if love.keyboard.isDown("right") then
         cameraX = cameraX + cameraSpeed
     end
@@ -119,6 +121,8 @@ local function printDebugInfo()
         cameraX,
         "Camera Y:",
         cameraY,
+        "runtime:",
+        dtCopy,
     }, " ")
     love.graphics.setColor(1, 1, 1)
     love.graphics.printf(cameraInfo, 0, 0, love.graphics.getWidth() - 20)
@@ -145,7 +149,7 @@ end
 
 local function canvasWithEndlessCheckboard()
     local canvas = love.graphics.newCanvas(400, 400)
-    local speed = {x = cameraX * 3, y = cameraY * 2}
+    local speed = { x = cameraX * 3, y = cameraY * 2 }
     local x = -(speed.x / 2) % (tileSize * 2)
     local y = -(speed.y / 2) % (tileSize * 2)
 
@@ -158,7 +162,8 @@ local function canvasWithEndlessCheckboard()
             else
                 love.graphics.setColor(0, 0, 0)
             end
-            canvas:renderTo(love.graphics.rectangle, "fill", x + (tileSize * col) - offset, y + (tileSize * row) -offset, tileSize,
+            canvas:renderTo(love.graphics.rectangle, "fill", x + (tileSize * col) - offset, y + (tileSize * row) - offset,
+                tileSize,
                 tileSize)
         end
     end

@@ -33,11 +33,11 @@ local function animation(dt)
         time = 0
     end
 end
-
+--[[
 function love.keypressed(key, scancode, isrepeat)
     eventBus.emit(events.keyPressed, {key = key, scancode = scancode, isrepeat = isrepeat})
 end
-
+ ]]
 local function playerControls(dt)
     -- Update position based on key presses
     if love.keyboard.isDown("left") then
@@ -61,7 +61,7 @@ local function moveInfo()
     -- Display info about the current dance move
     love.graphics.setColor(1, 1, 1)
     local moveNames = {
-        "Spin Move", "Circle Dance", "Pulse Wobble", 
+        "Spin Move", "Circle Dance", "Pulse Wobble",
         "Figure Eight", "Bounce Spin"
     }
     local currentMove = math.min(math.floor(time / 2) + 1, 5)
@@ -71,9 +71,24 @@ local function moveInfo()
     love.graphics.print("Rotation: " .. math.deg(rotation) % 360 .. " degrees", 10, 30)
 end
 
+local Proto1 = require('Proto1')
+local proto = Proto1.getInstance()
+
 function love.update(dt)
     -- playerControls(dt)
-    animation(dt)
+    -- animation(dt)
+    if proto == nil then
+        love.graphics.printf("error", 10, 10)
+    elseif
+        proto.moveCamera(dt)
+    then
+    end
+end
+
+function love.draw()
+    -- UI.displayLog()
+    -- drawTileMap()
+    proto.renderMap()
 end
 
 function love.drawOLD()
@@ -88,11 +103,11 @@ function love.drawOLD()
 
     -- Draw the colored rectangle centered at the origin
     love.graphics.setColor(1, 0.2, 0.2)
-    love.graphics.rectangle("fill", -size/2, -size/2, size, size)
+    love.graphics.rectangle("fill", -size / 2, -size / 2, size, size)
 
     -- Add a white outline
     love.graphics.setColor(1, 1, 1)
-    love.graphics.rectangle("line", -size/2, -size/2, size, size)
+    love.graphics.rectangle("line", -size / 2, -size / 2, size, size)
 
     -- Restore the transform
     love.graphics.pop()

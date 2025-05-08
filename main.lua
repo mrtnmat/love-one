@@ -19,6 +19,8 @@ function love.load()
     -- Set background color to a dark gray
     love.graphics.setBackgroundColor(0.2, 0.2, 0.2)
 
+    love.keyboard.setKeyRepeat( true )
+
     eventBus.emit(events.gameStart)
 end
 
@@ -77,12 +79,14 @@ local proto = Proto1.getInstance()
 function love.update(dt)
     -- playerControls(dt)
     -- animation(dt)
-    if proto == nil then
+--[[     if proto == nil then
         love.graphics.printf("error", 10, 10)
     elseif
         proto.moveCamera(dt)
     then
-    end
+    end ]]
+
+    proto.moveCamera(dt)
 end
 
 function love.draw()

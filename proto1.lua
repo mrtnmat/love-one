@@ -28,53 +28,11 @@ local colors = {
     black = createColor(0, 0, 0),
 }
 
-local entities = {
-    {
-        x = 100,
-        y = 20,
-        width = 70,
-        height = 90,
-        color = colors.green,
-        mode = "fill",
-    },
-    {
-        x = 300,
-        y = 10,
-        width = 100,
-        height = 150,
-        color = colors.blue,
-        mode = "fill",
-    },
-    {
-        x = 10,
-        y = 90,
-        width = 40,
-        height = 40,
-        color = colors.red,
-        mode = "fill",
-    },
-    {
-        x = -100,
-        y = 500,
-        width = 40,
-        height = 2000,
-        color = colors.black,
-        mode = "fill",
-    },
-    {
-        x = -0,
-        y = -200,
-        width = 400,
-        height = 400,
-        color = colors.white,
-        mode = "line",
-    },
+local camera = {
+    x = 0,
+    y = 0,
+    speed = PHI * 2,
 }
-
-
-
-local cameraX = 0
-local cameraY = 0
 local cameraSpeed = PHI * 2
 local tileSize = 40
 local dtCopy = 0
@@ -92,16 +50,16 @@ end
 local function moveCamera(dt)
     dtCopy = dt + dtCopy
     if love.keyboard.isDown("right") then
-        cameraX = cameraX + cameraSpeed
+        camera.x = camera.x + cameraSpeed
     end
     if love.keyboard.isDown("left") then
-        cameraX = cameraX - cameraSpeed
+        camera.x = camera.x - cameraSpeed
     end
     if love.keyboard.isDown("up") then
-        cameraY = cameraY - cameraSpeed
+        camera.y = camera.y - cameraSpeed
     end
     if love.keyboard.isDown("down") then
-        cameraY = cameraY + cameraSpeed
+        camera.y = camera.y + cameraSpeed
     end
 end
 
@@ -113,9 +71,9 @@ function love.keypressed(key, scancode, isrepeat)
     elseif key == "left" then
         cameraX = cameraX - cameraSpeed
     elseif key == "up" then
-        cameraY = cameraY - cameraSpeed
+        camera.y = camera.y - cameraSpeed
     elseif key == "down" then
-        cameraY = cameraY + cameraSpeed
+        camera.y = camera.y + cameraSpeed
     end ]]
     if key == "d" then
         relativeRotation = relativeRotation + rotationSpeed
@@ -175,8 +133,8 @@ local function starVertices(radius)
 
     local ret = {}
     for index, value in ipairs(outerVertices) do
-        table.insert(ret, value)
-        table.insert(ret, innerVertices[index])
+        table.insert(ret, {value.x, value.y})
+        table.insert(ret, {innerVertices[index].x, innerVertices[index].y})
     end
     assert(#ret == 10, "return array length wrong: " .. #ret)
     -- assert(false, string.format("starVertices nil element: %d %d", ret[10].x, ret[10].y))
@@ -189,9 +147,9 @@ local function printDebugInfo()
         "Camera Speed:",
         cameraSpeed,
         "Camera X:",
-        cameraX,
+        camera.x,
         "Camera Y:",
-        cameraY,
+        camera.y,
         "relativeRotation:",
         relativeRotation,
         "radiusRatio:",
@@ -203,15 +161,15 @@ end
 
 local function canvasWithParallaxRectangles()
     local canvas = love.graphics.newCanvas(400, 400)
-    local x = 0 - (cameraX / 2)
-    local y = 0 - (cameraY / 2)
+    local x = 0 - (camera.x / 2)
+    local y = 0 - (camera.y / 2)
     local width = 300
     local height = 300
     love.graphics.setColor(1, 0, 1)
     canvas:renderTo(love.graphics.rectangle, "fill", x, y, width, height)
 
-    x = -200 - (cameraX / 2)
-    y = 200 - (cameraY / 2)
+    x = -200 - (camera.x / 2)
+    y = 200 - (camera.y / 2)
     width = 350
     height = 800
     love.graphics.setColor(0, 0, 1)
@@ -222,7 +180,7 @@ end
 
 local function canvasWithEndlessCheckboard()
     local canvas = love.graphics.newCanvas(400, 400)
-    local speed = { x = cameraX * 3, y = cameraY * 2 }
+    local speed = { x = camera.x * 3, y = camera.y * 2 }
     local x = -(speed.x / 2) % (tileSize * 2)
     local y = -(speed.y / 2) % (tileSize * 2)
 
@@ -277,7 +235,7 @@ local function star()
     -- love.graphics.setColor(1, 1, 1)
     -- love.graphics.printf(table.concat(shifted, "\n"), 0, 100, love.graphics.getWidth() - 20)
 
-    local translated = translatePolygon(shifted, -cameraX + 200, -cameraY + 200)
+    local translated = translatePolygon(shifted, -camera.x + 200, -camera.y + 200)
     local triangles = love.math.triangulate(translated)
 
     local colors = {
@@ -306,20 +264,13 @@ local function renderMap()
     -- local xSize = love.graphics.getWidth()
     -- local ySize = love.graphics.getHeight()
     -- local minX = cameraX - (xSize / 2)
-    -- local minY = cameraY - (ySize / 2)
+    -- local minY = camera.y - (ySize / 2)
 
     -- local canvas = canvasWithParallaxRectangles()
     local canvas = canvasWithEndlessCheckboard()
     love.graphics.setColor(1, 1, 1)
-    -- love.graphics.draw(canvas, 0 - cameraX, -200 - cameraY)
-
---[[     for index, rectangle in ipairs(entities) do
-        love.graphics.setColor(rectangle.color)
-        local x = rectangle.x - cameraX
-        local y = rectangle.y - cameraY
-        love.graphics.rectangle(rectangle.mode, x, y, rectangle.width, rectangle.height)
-    end ]]
-    star()
+    -- love.graphics.draw(canvas, 0 - cameraX, -200 - camera.y)
+    -- star()
 end
 
 
@@ -328,6 +279,9 @@ Proto1.new = function()
         renderMap = renderMap,
         moveCamera = moveCamera,
         printDebugInfo = printDebugInfo,
+        starVertices = starVertices,
+        canvasWithEndlessCheckboard = canvasWithEndlessCheckboard,
+        camera = function() return camera end,
     }
 end
 

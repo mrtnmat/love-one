@@ -4,6 +4,8 @@ local eventBus = EventBusModule.getInstance()
 
 local events = require("eventNames")
 
+local meshproto = require("meshproto")
+
 -- Initialize position and speed
 local x = 400
 local y = 300
@@ -34,29 +36,6 @@ local function animation(dt)
     else
         time = 0
     end
-end
---[[
-function love.keypressed(key, scancode, isrepeat)
-    eventBus.emit(events.keyPressed, {key = key, scancode = scancode, isrepeat = isrepeat})
-end
- ]]
-local function playerControls(dt)
-    -- Update position based on key presses
-    if love.keyboard.isDown("left") then
-        x = x - speed * dt
-    elseif love.keyboard.isDown("right") then
-        x = x + speed * dt
-    end
-
-    if love.keyboard.isDown("up") then
-        y = y - speed * dt
-    elseif love.keyboard.isDown("down") then
-        y = y + speed * dt
-    end
-
-    -- Keep the rectangle within the screen bounds
-    x = math.max(50, math.min(love.graphics.getWidth() - 50, x))
-    y = math.max(50, math.min(love.graphics.getHeight() - 50, y))
 end
 
 local function moveInfo()
@@ -92,8 +71,9 @@ end
 function love.draw()
     -- UI.displayLog()
     -- drawTileMap()
-    proto.renderMap()
-    proto.printDebugInfo()
+    -- proto.renderMap()
+    -- proto.printDebugInfo()
+    meshproto.meshDraw()
 end
 
 function love.drawOLD()

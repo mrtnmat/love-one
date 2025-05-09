@@ -2,92 +2,21 @@ local self = {}
 
 local Constants = require('const')
 local Camera = require('camera')
+local Utils = require('utils')
+local EndlessCheckboard = require('renderables.endlessCheckboard')
+local Star = require('renderables.star')
 
 local radiusRatio = Constants.PHI / 4
 
-local function createColor(r, g, b)
-    return {
-        r,
-        g,
-        b,
-        1,
-    }
-end
-
 local colors = {
-    white = createColor(1, 1, 1),
-    red = createColor(1, 0, 0),
-    green = createColor(0, 1, 0),
-    blue = createColor(0, 0, 1),
-    black = createColor(0, 0, 0),
+    white = Utils.createColor(1, 1, 1),
+    red = Utils.createColor(1, 0, 0),
+    green = Utils.createColor(0, 1, 0),
+    blue = Utils.createColor(0, 0, 1),
+    black = Utils.createColor(0, 0, 0),
 }
 
-local tileSize = 40
-local dtCopy = 0
 local relativeRotation = 36
-
-local function getTileColor(x, y)
-    if x % 2 == y % 2 then
-        return colors.white
-    else
-        return colors.black
-    end
-end
-
-
-local rotationSpeed = 1
-
-local function linearize(t)
-    local linearized = {}
-    for index, value in ipairs(t) do
-        table.insert(linearized, value.x)
-        table.insert(linearized, value.y)
-    end
-    return linearized
-end
-
-local function toRadians(degrees)
-    return degrees * (math.pi / 180)
-end
-
-local function polygonVertices(sides, radius, rotation, linear)
-    local rot = rotation
-    if (rotation == nil) then
-        rot = 0
-    end
-    local theta = 360 / sides
-    local vertices = {}
-    for i = 0, sides - 1, 1 do
-        table.insert(vertices, {
-            x = radius * math.cos(toRadians(rot + (theta * i))),
-            y = radius * math.sin(toRadians(rot + (theta * i))),
-        })
-    end
-
-    if (linear == true) then
-        return linearize(vertices)
-    else
-        return vertices
-    end
-end
-
-local function starVertices(radius)
-    local relativeRot = relativeRotation
-    local absoluteRot = -90
-    local outerVertices = polygonVertices(5, radius, absoluteRot)
-    -- local innerVertices = polygonVertices(5, radius * (1 / PHI), absoluteRot + relativeRot)
-    local innerVertices = polygonVertices(5, radius * radiusRatio, absoluteRot + relativeRot)
-
-    local ret = {}
-    for index, value in ipairs(outerVertices) do
-        table.insert(ret, { value.x, value.y })
-        table.insert(ret, { innerVertices[index].x, innerVertices[index].y })
-    end
-    assert(#ret == 10, "return array length wrong: " .. #ret)
-    -- assert(false, string.format("starVertices nil element: %d %d", ret[10].x, ret[10].y))
-    return ret
-end
-
 
 local function printDebugInfo()
     local cameraInfo = table.concat({
@@ -125,88 +54,6 @@ local function canvasWithParallaxRectangles()
     return canvas
 end
 
-local function canvasWithEndlessCheckboard()
-    local canvas = love.graphics.newCanvas(400, 400)
-    local speed = { x = Camera.x * 3, y = Camera.y * 2 }
-    local x = -(speed.x / 2) % (tileSize * 2)
-    local y = -(speed.y / 2) % (tileSize * 2)
-
-    local offset = (tileSize * 4)
-
-    for row = 0, 20, 1 do
-        for col = 0, 20, 1 do
-            if (row + col) % 2 == 0 then
-                love.graphics.setColor(1, 1, 1)
-            else
-                love.graphics.setColor(0, 0, 0)
-            end
-            canvas:renderTo(love.graphics.rectangle, "fill", x + (tileSize * col) - offset, y + (tileSize * row) - offset,
-                tileSize,
-                tileSize)
-        end
-    end
-
-    return canvas
-end
-
-local function star()
-    local function shiftToZero(numberList)
-        local min = math.min(table.unpack(numberList))
-        local ret = {}
-        for i = 1, #numberList do
-            table.insert(ret, numberList[i] - min)
-        end
-        return ret
-    end
-
-    local function translatePolygon(vertices, x, y)
-        local ret = {}
-        for i = 1, #vertices do
-            local shift = nil
-            if (i % 2 == 0) then
-                shift = y
-            else
-                shift = x
-            end
-            table.insert(ret, vertices[i] + shift)
-        end
-        return ret
-    end
-    -- local vertices  = { 100, 100, 200, 100, 200, 200, 300, 200, 300, 300, 100, 300 } -- Concave "L" shape.
-    -- local vertices  = { 100,0 , 150,50 , 200,50 , 100,100 , 0,50 , 50,50 , 100,0} -- Concave "L" shape.
-
-
-    local vertices = starVertices(100)
-    local shifted = shiftToZero(linearize(vertices))
-
-    -- love.graphics.setColor(1, 1, 1)
-    -- love.graphics.printf(table.concat(shifted, "\n"), 0, 100, love.graphics.getWidth() - 20)
-
-    local translated = translatePolygon(shifted, -Camera.x + 200, -Camera.y + 200)
-    local triangles = love.math.triangulate(translated)
-
-    local colors = {
-        --[[         createColor(1, 0, 0),
-        createColor(1, 0.3, 0.3),
-        createColor(1, 0.6, 0.6),
-        createColor(1, 0.9, 0.9), ]]
-        createColor(0, 0, 0),
-        createColor(0, 0.3, 0.3),
-        createColor(0, 0.6, 0.6),
-        createColor(0, 0.9, 0.9),
-        --[[         createColor(1, 0, 1),
-        createColor(1, 1, 0),
-        createColor(0, 0, 0),
-        createColor(0, 0, 1),
-        createColor(0, 1, 0), ]]
-    }
-
-    for i, triangle in ipairs(triangles) do
-        love.graphics.setColor(colors[i % #colors + 1])
-        love.graphics.polygon("fill", triangle)
-    end
-end
-
 local function renderMap()
     -- local xSize = love.graphics.getWidth()
     -- local ySize = love.graphics.getHeight()
@@ -214,10 +61,8 @@ local function renderMap()
     -- local minY = Camera.y - (ySize / 2)
 
     -- local canvas = canvasWithParallaxRectangles()
-    local canvas = canvasWithEndlessCheckboard()
-    love.graphics.setColor(1, 1, 1)
-    love.graphics.draw(canvas, 300 - Camera.x, -200 - Camera.y)
-    -- star()
+    EndlessCheckboard(-200, 1000)
+    Star()
 end
 
 
@@ -225,8 +70,6 @@ self =
 {
     renderMap = renderMap,
     printDebugInfo = printDebugInfo,
-    starVertices = starVertices,
-    canvasWithEndlessCheckboard = canvasWithEndlessCheckboard,
 }
 
 return self

@@ -1,13 +1,15 @@
 {
+  "runtime": {
+    "version": "LuaJIT",
+    "special": {
+      "love.filesystem.load": "loadfile"
+    }
+  },
   "diagnostics": {
     "globals": [
       "love"
     ]
   },
-  "workspace.library": [
-    "${workspaceFolder}/.luacats/love2d/library"
-  ],
-  ";runtime.version": "LuaJIT",
   "runtime.special": {
     "love.filesystem.load": "loadfile"
   },
@@ -18,6 +20,7 @@
     ],
     "ignoreDir": [
       ".luacats"
-    ]
+    ],
+    "checkThirdParty": "false"
   }
 }

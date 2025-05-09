@@ -1,3 +1,5 @@
-if os.getenv("LOCAL_LUA_DEBUGGER_VSCODE") == "1" then
-  require("lldebugger").start()
-end
+local lldebugger = require("lldebugger")
+
+lldebugger.start()
+
+_G.inspect=require('inspect')

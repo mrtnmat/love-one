@@ -1,7 +1,6 @@
 local Camera = require('camera')
 local Utils = require('utils')
 local Const = require('const')
-local Inspect = require('inspect')
 
 local function linearize(t)
     local linearized = {}
@@ -47,14 +46,11 @@ local function starVertices(radius)
     end
     assert(#ret == 10, "return array length wrong: " .. #ret)
     -- assert(false, string.format("starVertices nil element: %d %d", ret[10].x, ret[10].y))
-    print("[starVertices] ret: " .. #ret)
     return ret
 end
 
 local function star()
     local function shiftToZero(numberList)
-        print(Inspect(numberList))
-        print("[shiftToZero] #numberlist:" .. #numberList)
         local min = math.min(unpack(numberList))
         local ret = {}
         for i = 1, #numberList do
@@ -82,7 +78,6 @@ local function star()
 
     local vertices = starVertices(100)
     local linearized = linearize(vertices)
-    print("[star] #linearized: " .. #linearized)
     local shifted = shiftToZero(linearized)
 
     -- love.graphics.setColor(1, 1, 1)

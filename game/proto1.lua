@@ -1,7 +1,7 @@
 Proto1 = {}
 local instance = nil
 
-local PHI = (1 + math.pow(5, 1 / 2)) / 2
+local PHI = (1 + (5 ^ 1 / 2)) / 2
 local radiusRatio = PHI / 4
 
 Proto1.getInstance = function()
@@ -204,7 +204,7 @@ end
 
 local function star()
     local function shiftToZero(numberList)
-        local min = math.min(unpack(numberList))
+        local min = math.min(table.unpack(numberList))
         local ret = {}
         for i = 1, #numberList do
             table.insert(ret, numberList[i] - min)

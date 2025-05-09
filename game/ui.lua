@@ -3,7 +3,6 @@ local eventBus = EventBusModule.getInstance()
 
 local Utils = require("utils")
 local Proto1 = require("proto1")
-local proto = Proto1.getInstance()
 
 local Logger = require("logger")
 

@@ -281,7 +281,7 @@ Proto1.new = function()
         printDebugInfo = printDebugInfo,
         starVertices = starVertices,
         canvasWithEndlessCheckboard = canvasWithEndlessCheckboard,
-        camera = function() return camera end,
+        camera = camera,
     }
 end
 

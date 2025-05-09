@@ -35,48 +35,7 @@ local function getTileColor(x, y)
 end
 
 
-local function moveCamera(dt)
-    dtCopy = dt + dtCopy
-    if love.keyboard.isDown("right") then
-        Camera.x = Camera.x + Camera.speed
-    end
-    if love.keyboard.isDown("left") then
-        Camera.x = Camera.x - Camera.speed
-    end
-    if love.keyboard.isDown("up") then
-        Camera.y = Camera.y - Camera.speed
-    end
-    if love.keyboard.isDown("down") then
-        Camera.y = Camera.y + Camera.speed
-    end
-end
-
 local rotationSpeed = 1
-
-function love.keypressed(key, scancode, isrepeat)
-    --[[     if key == "right" then
-        cameraX = cameraX + Camera.speed
-    elseif key == "left" then
-        cameraX = cameraX - Camera.speed
-    elseif key == "up" then
-        Camera.y = Camera.y - Camera.speed
-    elseif key == "down" then
-        Camera.y = Camera.y + Camera.speed
-    end ]]
-    if key == "d" then
-        relativeRotation = relativeRotation + rotationSpeed
-    end
-    if key == "f" then
-        relativeRotation = relativeRotation - rotationSpeed
-    end
-
-    if key == "r" then
-        radiusRatio = math.min(1, radiusRatio + 0.02)
-    end
-    if key == "e" then
-        radiusRatio = math.max(0.1, radiusRatio - 0.02)
-    end
-end
 
 local function linearize(t)
     local linearized = {}
@@ -257,7 +216,7 @@ local function renderMap()
     -- local canvas = canvasWithParallaxRectangles()
     local canvas = canvasWithEndlessCheckboard()
     love.graphics.setColor(1, 1, 1)
-    -- love.graphics.draw(canvas, 0 - cameraX, -200 - Camera.y)
+    love.graphics.draw(canvas, 300 - Camera.x, -200 - Camera.y)
     -- star()
 end
 
@@ -265,7 +224,6 @@ end
 self =
 {
     renderMap = renderMap,
-    moveCamera = moveCamera,
     printDebugInfo = printDebugInfo,
     starVertices = starVertices,
     canvasWithEndlessCheckboard = canvasWithEndlessCheckboard,

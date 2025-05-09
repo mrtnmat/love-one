@@ -1,6 +1,7 @@
 require('debugAdapter')
 require('ui')
 
+local Camera = require('camera')
 local Proto = require('proto1')
 
 function love.load()
@@ -14,13 +15,13 @@ function love.load()
 end
 
 function love.update(dt)
-    Proto.moveCamera(dt)
+    Camera.move(dt)
 end
 
 function love.draw()
     -- UI.displayLog()
     -- drawTileMap()
-    -- proto.renderMap()
+    Proto.renderMap()
     Proto.printDebugInfo()
     -- meshproto.meshDraw()
 end

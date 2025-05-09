@@ -11,5 +11,13 @@
   "runtime.special": {
     "love.filesystem.load": "loadfile"
   },
-  "workspace.checkThirdParty": false
+  "workspace.checkThirdParty": false,
+  "workspace": {
+    "library": [
+      "${workspaceFolder}/.luacats/love2d/library"
+    ],
+    "ignoreDir": [
+      ".luacats"
+    ]
+  }
 }
